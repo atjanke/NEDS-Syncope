@@ -33,6 +33,7 @@ core <- core %>%
   mutate.(key_ed = as.character(key_ed),hosp_ed = as.character(hosp_ed)) %>%
   left_join.(ip,by="key_ed")
 rm(ip)
+gc()
 
 # Select/clean key variables
 core <- core %>%

@@ -10,17 +10,17 @@ library(miceadds)
 core <- readRDS(file="data/core.rds")
 hosp <- readRDS(file="data/hosp.rds")
 
-# Pull out frequency counts for CCSR-CIR diagnoses
-core %>%
-  select(i10_dx1:i10_dx35) %>%
-  pivot_longer(i10_dx1:i10_dx35) %>%
-  rename(Code=value) %>%
-  inner_join(CIRC_LIST,by="Code") %>%
-  group_by(Code) %>%
-  summarise(Count=n(),
-            Description=first(Description)) %>%
-  arrange(-Count) %>%
-  write.csv("CIRC_Counts_2.csv")
+library(survey)
+# Set up design
+cluster <- svydesign(
+  id=~key_ed,
+  strata=~neds_stratum,
+  weights=~discwt,
+  nest=TRUE,
+  data=core,
+  multicore=T)
+
+svymean(~age, cluster,na.rm=T,se=TRUE,multicore=T)
 
 
 hospital_data <- core %>%
@@ -29,9 +29,14 @@ hospital_data <- core %>%
     Obs_Rate = sum(ifelse(admit=="Observation Billing",1,0))/n(),
     Admit_Rate = sum(ifelse(admit=="Admit",1,0))/n(),
     Transfer_Rate = sum(ifelse(admit=="Transfer",1,0))/n(),
+    Outcome_Rate = Obs_Rate+Admit_Rate+Transfer_Rate,
     Low_Risk_Syncope_Visits = n()) %>%
   left_join(hosp,by="hosp_ed") %>%
   select(-hosp_control,-hosp_urban,-hosp_teach)
+
+
+print("Information about hospitals with hospitalization rate 0%: ")
+hospital_data %>% filter(Outcome_Rate==0) %>% summary()
 
 # Figure for hospital characteristics
 a <- ggplot(hosp)+geom_bar(aes(x=visits_category))+xlab("")+ylab("Count")+theme_bw()+
@@ -54,12 +59,12 @@ core %>%
 
 # Plot admissions across hospitals
 core %>%
-  filter(age>17 & age<50) %>%
   group_by(hosp_ed) %>%
-  summarise(Admit_Rate = sum(ifelse(admit=="Admit",1,0))/n()) %>%
+  summarise(Admit_Rate = sum(ifelse(admit!="Discharge/Transfer to SNF/Other/Died in ED",1,0))/n()) %>%
   left_join(hosp,by="hosp_ed") %>%
   # Drop if admit rate is 0
-  filter(Admit_Rate>0 & Admit_Rate!=1) %>%
+  filter(Admit_Rate>0.00000001 & 
+           Admit_Rate!=1) %>%
   mutate(Hospital = "") %>%
   ggplot(aes(Hospital,Admit_Rate))+
   geom_boxplot(alpha=0.7,outlier.shape=NA)+
@@ -164,7 +169,7 @@ core %>%
   ggplot(aes(x=Visit_Category,y=Admit_Rate))+geom_quasirandom(alpha=0.2)+
   theme_bw()+ylab("Admit Rate")+xlab("Yearly Visit Volume")
 
-# Build unadjusted logistic regression model and plot ORs
+# Build logistic regression model and plot ORs
 model_input <- core %>%
   left_join(hosp,by="hosp_ed") %>%
   mutate(outcome = as.integer(ifelse(admit=="Admit" | admit=="Transfer" | admit=="Observation Billing",1,0))) %>%
@@ -312,5 +317,19 @@ output %>%
   coord_cartesian(xlim=c(0.1,10))#+
 #  ggtitle("Odds of Admit with Primary Diagnosis Syncope, Adjusted for Age, By Hospital Characteristics")
   
+# # # Counterfactuals
+# How many nationwide ED visits were low-value?
+core <- core %>%
+  mutate(outcome = as.integer(ifelse(admit=="Admit" | admit=="Transfer" | admit=="Observation Billing",1,0)))
+sum(core[core$outcome==1]$discwt)
+# How many ED visits would there be if sites >3% instead of admitted at 3%?
+hospital_data %>%
+  mutate(Outcome_Rate = case_when(
+    Outcome_Rate>0.03 ~ 0.03, T ~ Outcome_Rate)) %>%
+  mutate(Low_Risk_Syncope_Visits = Low_Risk_Syncope_Visits*Outcome_Rate*mean(core$discwt)) %>%
+  select(Low_Risk_Syncope_Visits) %>%
+  colSums()
+
+
 
 
