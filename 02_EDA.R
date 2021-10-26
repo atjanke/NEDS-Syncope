@@ -7,8 +7,8 @@ library(ggforce)
 library(RColorBrewer)
 library(miceadds)
 
-core <- readRDS(file="data/core.rds")
-hosp <- readRDS(file="data/hosp.rds")
+core <- readRDS(file="data/core-2019.rds")
+hosp <- readRDS(file="data/hosp-2019.rds")
 
 library(survey)
 # Set up design

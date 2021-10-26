@@ -1,7 +1,7 @@
 library(tidyverse)
 library(survey)
 
-core <- readRDS(file="data/core.rds")
+core <- readRDS(file="data/core-2019.rds")
 
 core <- core %>%
   mutate(Low_Risk_Syncope=1)

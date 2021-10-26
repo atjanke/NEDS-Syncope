@@ -2,13 +2,13 @@ library(data.table)
 library(tidytable)
 library(tidyverse)
 
-setwd("/Users/alexanderjanke/Data/neds/2018_NEDS")
+setwd("/Users/alexanderjanke/Data/neds/2019_NEDS")
 
 ed <- 
   unique(rbind(
-  fread(cmd = "grep -E '9922' NEDS_2018_ED.csv" ),
-  fread(cmd = "grep -E '99218' NEDS_2018_ED.csv"),
-  fread(cmd = "grep -E '99219' NEDS_2018_ED.csv")))
+    fread(cmd = "grep -E '9922' NEDS_2019_ED.csv" ),
+    fread(cmd = "grep -E '99218' NEDS_2019_ED.csv"),
+    fread(cmd = "grep -E '99219' NEDS_2019_ED.csv")))
 
 colnames(ed) <- c("hosp_ed","key_ed","cpt1","cpt2","cpt3 ","cpt4","cpt5","cpt6 ","cpt7 ","cpt8 ","cpt9 ","cpt10 ","cpt11 ","cpt12 ","cpt13 ","cpt14 ","cpt15 ","cpt16 ",
                   "cpt17 ","cpt18","cpt19","cpt20","cpt21 ","cpt22 ","cpt23 ","cpt24 ","cpt25 ","cpt26 ","cpt27 ","cpt28 ","cpt29 ","cpt30 ","cpt31 ","cpt32 ","cpt33 ",
@@ -29,6 +29,3 @@ ed <- ed %>%
   group_by(key_ed) %>%
   summarise(Observation = 1) %>%
   mutate(key_ed=as.character(key_ed))
-  
-  
-

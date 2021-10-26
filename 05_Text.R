@@ -8,8 +8,8 @@ library(RColorBrewer)
 library(miceadds)
 library(survey)
 
-core <- readRDS(file="data/core.rds") %>% mutate(Total=1) %>% mutate(Admit_Indicator=ifelse(admit!="Discharge/Transfer to SNF/Other/Died in ED",1,0))
-hosp <- readRDS(file="data/hosp.rds")
+core <- readRDS(file="data/core-2019.rds") %>% mutate(Total=1) %>% mutate(Admit_Indicator=ifelse(admit!="Discharge/Transfer to SNF/Other/Died in ED",1,0))
+hosp <- readRDS(file="data/hosp-2019.rds")
 
 library(survey)
 # Set up design
@@ -29,7 +29,7 @@ core %>%
   left_join(hosp,by="hosp_ed") %>%
   # Drop if admit rate is 0
   filter(Admit_Rate==0) %>%
-  nrow()
+  nrow() %>% print()
 
 print("Estimated low-risk syncope patients nationwide (discwt): ")
 total_<-svytotal(~Total, cluster,na.rm=T,se=TRUE,multicore=T)[1]
@@ -61,7 +61,7 @@ core %>% mutate(ADMIT_RATE = Admit_Indicator*discwt) %>%
   filter(TOTAL_RAW_SYNCOPE_VISITS>15) %>%
   # Filter HOSP_ED (31260) as it reports an odd outlier number of ED observation stays
   filter(hosp_ed!=31260) %>%
-  select(ADMIT_RATE) %>% summary()
+  select(ADMIT_RATE) %>% summary() %>% print()
 
 print("If hospitals admitted greater than 2% of low-risk patients reduced their ED admission to 2%, resultant admissions reduction: ")
 core %>% mutate(ADMIT_RATE = Admit_Indicator*discwt) %>%
