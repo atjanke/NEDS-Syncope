@@ -83,7 +83,6 @@ Exclusions <- Exclusions %>%
         "K8001"== Code |
         "K8010"== Code |
         "K8011"== Code |
-        "K8012"== Code |
         "K8013"== Code |
         "K8018"== Code |
         "K8019"== Code |
@@ -464,10 +463,35 @@ Exclusions <- Exclusions %>%
         "D62" == Code |
           "N179" == Code |
           "E860" == Code |
+          "E861" == Code |
           "E876" == Code |
           "I959" == Code |
-          "E1165" == Code
-          
-          ~ "CSRS_SAEs_Mapping",
-    T ~ Type
-  ))
+          "E1165" == Code |
+          "K921" == Code |
+          "E875" == Code |
+          "J189" == Code |
+          "M6282" == Code |
+          "K922" == Code |
+          "R739" == Code |
+          "E8351" == Code |
+          "I951" == Code |
+          "R45851" == Code |
+          "J9601" == Code |
+          "K264" == Code |
+          "R0902" == Code |
+          "E869" == Code |
+          "K254" == Code |
+          "J45901" == Code |
+          "K920" == Code |
+          "E1010" == Code |
+          "E1065" == Code |
+          "E11649" == Code |
+          "I9589" == Code |
+          "G9340" == Code |
+          "I952" == Code |
+          "E10649" == Code |
+          "G9341" == Code |
+          "O721" == Code |
+          "E1110" == Code |
+          "E0590" == Code |
+          "G92" == Code~ "CSRS_SAEs_Mapping",T ~ Type))

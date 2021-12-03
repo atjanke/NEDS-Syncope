@@ -6,7 +6,7 @@ library(ggplot2)
 # Limit to adults
 core <- core[age>=18] %>%
   select.(-age_category)
-print("Adult ED encounters with primary diagnosis syncope:")
+print("Adult ED encounters with ANY diagnosis syncope:")
 print(nrow(core))
 
 # Remove people who died in ED and died in hospital
@@ -42,6 +42,8 @@ print("Exclusions from Venk's cohort:")
 print(k - nrow(core))
 
 k <- nrow(core)
+# Identify exclusions and order by frequency
+source("Identify-Exclusions.R")
 core <- Exclude(core,Exclusions[Type=="CSRS_SAEs_Mapping"]$Code)
 print("Encounters with serious ED diagnoses:")
 print(k - nrow(core))
@@ -71,7 +73,7 @@ print(nrow(core))
 
 # Most common associated diagnosis codes among admits with primary diagnosis
 common_diagnoses <- core %>%
-  filter.(admit=="Admit") %>%
+  filter.(disp_ed==9) %>%
   select.(i10_dx1:i10_dx35) %>%
   pivot_longer.(i10_dx1:i10_dx35) %>%
   select.(value) %>%
