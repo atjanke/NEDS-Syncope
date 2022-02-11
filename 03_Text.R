@@ -27,7 +27,6 @@ print(nrow(core))
 print("Unweighted visits for low-risk syncope resulting in admission")
 print(nrow(core[core$Admit_Indicator==1]))
 
-
 print("Number of sites reporting outcome rate zero: ")
 core %>%
   group_by(hosp_ed) %>%
@@ -68,6 +67,9 @@ print(total_)
 print("Estimated low-risk syncope patients admitted (discwt): ")
 admitted_ <- svytotal(~Admit_Indicator, cluster,na.rm=T,se=TRUE,multicore=T)[1]
 print(admitted_)
+
+print("Admission rate for low-risk syncope patients with 95% CI: ")
+print(svyciprop(~Admit_Indicator, cluster, method="li"))
 
 print("Estimated proportion admitted (discwt): ")
 print(round(admitted_/total_,4))

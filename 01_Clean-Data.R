@@ -157,7 +157,7 @@ hosp <- hosp %>%
     "<20k","20-40k","40-60k","60-80k","80k+"
   )))
 
-setwd("~/Box/NEDS-Syncope")
+setwd("~/Library/CloudStorage/Box-Box/NEDS-Syncope")
 source("01a_Exclusions.R")
 saveRDS(core,file="data/core-2019.rds")
 saveRDS(hosp,file="data/hosp-2019.rds")

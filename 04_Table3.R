@@ -34,7 +34,8 @@ core <- core %>%
 rm(elix)
 gc()
 
-
+core <- core %>%
+  left_join.(hosp,by="hosp_ed")
 
 #### Set up indicators ####
 core <- core %>%
@@ -58,7 +59,25 @@ core <- core %>%
          Diab      = ifelse(diabunc+diabc>0,1,0),
          CKD       = ifelse(rf>0,1,0),
          HF        = ifelse(chf>0,1,0),
-         COPD      = ifelse(cpd>0,1,0))
+         COPD      = ifelse(cpd>0,1,0),
+         Own.1     = ifelse(hosp_control=="Government or private (collapsed category)",1,0),
+         Own.2     = ifelse(hosp_control=="Government, nonfederal (public)",1,0),
+         Own.3     = ifelse(hosp_control=="Private, not-for-profit (voluntary)",1,0),
+         Own.4     = ifelse(hosp_control=="Private, investor-owned (proprietary)",1,0),
+         Own.5     = ifelse(hosp_control=="Private (collapsed category)",1,0),
+         UR.1      = ifelse(hosp_urban=="Large metro",1,0),
+         UR.2      = ifelse(hosp_urban=="Small metro",1,0),
+         UR.3      = ifelse(hosp_urban=="Micropolitan",1,0),
+         UR.4      = ifelse(hosp_urban=="Not metropolitan or micropolitan",1,0),
+         UR.5      = ifelse(hosp_urban=="Collapsed categories/other",1,0),
+         T.1       = ifelse(hosp_teach=="Metropolitan non-teaching",1,0),
+         T.2       = ifelse(hosp_teach=="Metropolitan teaching",1,0),
+         T.3       = ifelse(hosp_teach=="Non-metropolitan hospital",1,0),
+         Size.1    = ifelse(visits_category=="<20k",1,0),
+         Size.2    = ifelse(visits_category=="20-40k",1,0),
+         Size.3    = ifelse(visits_category=="40-60k",1,0),
+         Size.4    = ifelse(visits_category=="60-80k",1,0),
+         Size.5    = ifelse(visits_category=="80k+",1,0))
 
 
 #### Set up design     ####
@@ -105,6 +124,28 @@ table[21,1] <- paste0(comma(round(svytotal(~COPD    ,cluster,na.rm=T,se=TRUE,mul
 
 
 
+table[22,1] <- paste0(comma(round(svytotal(~Own.1    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~Own.1,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[23,1] <- paste0(comma(round(svytotal(~Own.2    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~Own.2,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[24,1] <- paste0(comma(round(svytotal(~Own.3    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~Own.3,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[25,1] <- paste0(comma(round(svytotal(~Own.4    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~Own.4,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[26,1] <- paste0(comma(round(svytotal(~Own.5    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~Own.5,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+
+table[27,1] <- paste0(comma(round(svytotal(~UR.1    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~UR.1,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[28,1] <- paste0(comma(round(svytotal(~UR.2    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~UR.2,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[29,1] <- paste0(comma(round(svytotal(~UR.3    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~UR.3,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[30,1] <- paste0(comma(round(svytotal(~UR.4    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~UR.4,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[31,1] <- paste0(comma(round(svytotal(~UR.5    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~UR.5,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+
+table[32,1] <- paste0(comma(round(svytotal(~T.1    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~T.1,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[33,1] <- paste0(comma(round(svytotal(~T.2    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~T.2,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[34,1] <- paste0(comma(round(svytotal(~T.3    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~T.3,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+
+table[35,1] <- paste0(comma(round(svytotal(~Size.1    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~Size.1,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[36,1] <- paste0(comma(round(svytotal(~Size.2    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~Size.2,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[37,1] <- paste0(comma(round(svytotal(~Size.3    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~Size.3,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[38,1] <- paste0(comma(round(svytotal(~Size.4    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~Size.4,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+table[39,1] <- paste0(comma(round(svytotal(~Size.5    ,cluster,na.rm=T,se=TRUE,multicore=T)[1],0)), " ", percent(svymean(~Size.5,cluster,na.rm=T,se=TRUE,multicore=T)[1],accuracy=0.1))
+
+write.csv(table,"Table3.csv",row.names=FALSE)
 
 
-write.csv(table,"Table1.csv",row.names=FALSE)

@@ -1,7 +1,6 @@
-
+# This is a link of the CCSR codes that were identified as exclusions
 
 Exclusions <- 
-
   rbind(
   data.frame(Type='CSRS_Exclusions_Mapping', CCSR_Code=c(
   'NVS009',
@@ -27,6 +26,6 @@ Exclusions <-
   'CIR021',
   'CIR027')),
   data.frame(Type="CSRS_Hx_Heart_Disease_Mapping",CCSR_Code=c(
-    'CIR005',
-    'CIR011',
-    'CIR019')))
+  'CIR005',
+  'CIR011',
+  'CIR019')))
