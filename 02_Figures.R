@@ -227,7 +227,7 @@ hosp <- readRDS(file="data/hosp-2019.rds")
 library(survey)
 # Set up design
 cluster <- svydesign(
-  id=~key_ed,
+  id=~hosp_ed,
   strata=~neds_stratum,
   weights=~discwt,
   nest=TRUE,
