@@ -3,7 +3,7 @@ This is code for an exploratory data analysis of admissions/transfers to acute c
 
 01_Clean-Data.R calls 01_Observation-Coded.R as well as 01a/01b/01c/01d to create the analysis files from the raw NEDS .csv files
 
-02_Figures.R creates Figures 2 and 3 in the manuscript, and also creates the odds ratios as in Table 4
+02_Figures.R creates the figure in the manuscript, and also creates the odds ratios for the multivariable model
 
 03_Text.R generates results for the text of the manuscript
 
